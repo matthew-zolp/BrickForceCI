@@ -1,10 +1,6 @@
 name: Validate Deployment
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on:
-  pull_request:
-    paths:
-      - ".github/workflows/**"
-
+on: [pull_request]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
