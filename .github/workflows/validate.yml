@@ -5,7 +5,7 @@ run-name: ${{ github.actor }} is Validating against the Packaging Org 🚀
       - "force-app/main/default/**" # this only runs when changes are made to the force-app/main/default directory
       - ".github/workflows/**"    
 jobs:
-  Validate Deployment:
+  Validate-Deployment:
     runs-on: ubuntu-latest
     steps:      
     # Install's the SFDX git delta plugin that helps us minimize our test deployment times
