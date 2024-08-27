@@ -2,6 +2,7 @@ name: Validate Deployment against the Packaging Org
 run-name: ${{ github.actor }} is Validating against the Packaging Org 🚀
   pull_request:
     paths:
+      - "force-app/main/default/**" # this only runs when changes are made to the force-app/main/default directory
       - ".github/workflows/**"    
 jobs:
   Validate Deployment:
