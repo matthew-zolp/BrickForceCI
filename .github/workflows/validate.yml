@@ -1,6 +1,8 @@
 name: Validate Deployment against the Packaging Org
 run-name: ${{ github.actor }} is Validating against the Packaging Org 🚀
-on: [pull_request]
+  pull_request:
+    paths:
+      - ".github/workflows/**"    
 jobs:
   Validate Deployment:
     runs-on: ubuntu-latest
