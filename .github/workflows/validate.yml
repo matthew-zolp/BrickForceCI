@@ -1,9 +1,15 @@
-name: Validate Deployment against the Packaging Org
-run-name: ${{ github.actor }} is Validating against the Packaging Org 🚀
+name: Validate PR
+run-name: Validate PR
+on: # this only runs when a pull request is created or synchronized.
   pull_request:
     paths:
       - "force-app/main/default/**" # this only runs when changes are made to the force-app/main/default directory
-      - ".github/workflows/**"    
+      - ".github/workflows/**"      # OR if changes are made to the workflows directory
+env:
+  TEST_ENV: 'test'
+  GH_TOKEN: ${{ github.token }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       
 jobs:
   Validate-Deployment:
     runs-on: ubuntu-latest
