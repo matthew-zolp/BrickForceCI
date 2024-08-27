@@ -1,0 +1,30 @@
+name: Validate PR
+run-name: Validate PR
+on: # this only runs when a pull request is created or synchronized.
+  pull_request:
+    paths:
+      - "force-app/main/default/**" # this only runs when changes are made to the force-app/main/default directory
+      - ".github/workflows/**"      # OR if changes are made to the workflows directory
+env:
+  TEST_ENV: 'test'
+  GH_TOKEN: ${{ github.token }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       
+jobs:
+  Validate-Deployment:
+    runs-on: ubuntu-latest
+    container:
+      image: salesforce/cli:latest-full
+    steps:      
+    # Install's the SFDX git delta plugin that helps us minimize our test deployment times
+      - name: Install the sfdx-git-delta plugin
+        run: |
+          echo y | sf plugins install sfdx-git-delta
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
