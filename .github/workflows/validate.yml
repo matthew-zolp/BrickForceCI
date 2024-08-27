@@ -13,6 +13,8 @@ env:
 jobs:
   Validate-Deployment:
     runs-on: ubuntu-latest
+    container:
+      image: salesforce/cli:latest-full
     steps:      
     # Install's the SFDX git delta plugin that helps us minimize our test deployment times
       - name: Install the sfdx-git-delta plugin
