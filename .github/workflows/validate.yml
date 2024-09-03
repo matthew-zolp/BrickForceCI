@@ -1,5 +1,5 @@
-name: Validate PR
-run-name: Validate PR
+name: Validate Deployment
+run-name: Validate Deployment
 on: # this only runs when a pull request is created or synchronized.
   pull_request:
     paths:
@@ -21,3 +21,5 @@ jobs:
         run: echo "Implement Authentication here"
       - name: Create Scratch Org for Validation
         run: sf org create scratch --alias BrickForceCI --target-dev-hub MattZolpsDevOrg --definition-file config/project-scratch-def.json --set-default --duration-days 1
+      - name: Deploy to Scratch Org and Run Tests
+        run: echo "Deploying and Running Tests"
