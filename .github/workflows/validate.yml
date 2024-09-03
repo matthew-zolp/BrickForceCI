@@ -22,11 +22,12 @@ jobs:
       - name: Install the sfdx-git-delta plugin
         run: |
           echo y | sf plugins install sfdx-git-delta
+      - name: Check out repository code
+        uses: actions/checkout@v4
       - name: Generate Deployment Delta
         run: |
           sf sgd source delta -t="HEAD" -f="HEAD~1" -o "" --loglevel=debug
-      - name: Check out repository code
-        uses: actions/checkout@v4
+
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
