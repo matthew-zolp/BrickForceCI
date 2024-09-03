@@ -19,6 +19,8 @@ jobs:
     # Install's the SFDX git delta plugin that helps us minimize our test deployment times
       - name: Checkout Repository
         uses: actions/checkout@v4
+          with:
+          fetch-depth: 0
       - name: Install the sfdx-git-delta plugin
         run: |
           echo y | sf plugins install sfdx-git-delta
