@@ -1,0 +1,4 @@
+name: Promote Package to all Pre-Prod Orgs
+on: 
+  push:
+    branches: [master,main]

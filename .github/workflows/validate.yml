@@ -1,5 +1,5 @@
-name: Validate PR
-run-name: Validate PR
+name: Validate Deployment
+run-name: Validate Deployment
 on: # this only runs when a pull request is created or synchronized.
   pull_request:
     paths:
@@ -16,15 +16,10 @@ jobs:
     container:
       image: salesforce/cli:latest-full
     steps:      
-    # Install's the SFDX git delta plugin that helps us minimize our test deployment times
-      - name: Install the sfdx-git-delta plugin
-        run: |
-          echo y | sf plugins install sfdx-git-delta
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - uses: actions/checkout@v4
+      - name: Authenticate to the DevHub
+        run: echo "Implement Authentication here"
+      - name: Create Scratch Org for Validation
+        run: sf org create scratch --alias BrickForceCI --target-dev-hub MattZolpsDevOrg --definition-file config/project-scratch-def.json --set-default --duration-days 1
+      - name: Deploy to Scratch Org and Run Tests
+        run: echo "Deploying and Running Tests"

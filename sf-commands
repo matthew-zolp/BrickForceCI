@@ -1,0 +1,1 @@
+sf org create scratch --alias MattZolpsScratchOrg --target-dev-hub MattZolpsDevOrg --definition-file config/project-scratch-def.json --set-default --duration-days 3
