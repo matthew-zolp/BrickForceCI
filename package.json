@@ -1,41 +1,73 @@
 {
-  "name": "salesforce-app",
-  "private": true,
-  "version": "1.0.0",
-  "description": "Salesforce App",
-  "scripts": {
-    "lint": "eslint **/{aura,lwc}/**/*.js",
-    "test": "npm run test:unit",
-    "test:unit": "sfdx-lwc-jest",
-    "test:unit:watch": "sfdx-lwc-jest --watch",
-    "test:unit:debug": "sfdx-lwc-jest --debug",
-    "test:unit:coverage": "sfdx-lwc-jest --coverage",
-    "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
-    "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
-    "postinstall": "husky install",
-    "precommit": "lint-staged"
-  },
-  "devDependencies": {
-    "@lwc/eslint-plugin-lwc": "^1.1.2",
-    "@prettier/plugin-xml": "^3.2.2",
-    "@salesforce/eslint-config-lwc": "^3.2.3",
-    "@salesforce/eslint-plugin-aura": "^2.0.0",
-    "@salesforce/eslint-plugin-lightning": "^1.0.0",
-    "@salesforce/sfdx-lwc-jest": "^3.1.0",
-    "eslint": "^8.11.0",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jest": "^27.6.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.1.0",
-    "prettier": "^3.1.0",
-    "prettier-plugin-apex": "^2.0.1"
-  },
-  "lint-staged": {
-    "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
-      "prettier --write"
-    ],
-    "**/{aura,lwc}/**/*.js": [
-      "eslint"
-    ]
-  }
+    "name": "BrickforceCI",
+    "private": true,
+    "version": "1.0.0",
+    "description": "CI Framework",
+    "scripts": {    "scripts": {
+        "assign:permsets": "sf org assign permset -n VTC_Core && sf org assign permset -n VTC_CHRO && sf org assign permset -n VTC_DAS && sf org assign permset -n VTC_DIVA && sf org assign permset -n VTC_HDR && sf org assign permset -n VTC_MPI && sf org assign permset -n VTC_VDIF",
+        "create:scratch": "sf org create scratch --set-default --alias va-teams-integrations-dev --definition-file config/scratch-defs/dev.json --wait 20 && npm run open",
+        "delete:feature:branches": "git fetch --prune && git branch | grep -v \"^\\s*master$\" | grep -v \"^\\s*release/\" | grep -v \"^\\s*int/\" | xargs -r -n 1 git branch -D",
+        "delete:scratch": "sf org delete scratch",
+        "display:org": "sf org display",
+        "display:org:user": "sf org display --user",
+        "find:tests": "find . -type f -name '*Test.cls' | awk -F/ '{print \"--class-names \" $NF}' | paste -sd ' ' -",
+        "install:dep": "sf toolbox package dependencies install",
+        "install:toolbox": "echo y | sf plugins install @dx-cli-toolbox/sfdx-toolbox-package-utils",
+        "lint": "eslint **/{aura,lwc}/**/*.js",
+        "lint:all": "prettier --write '**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}' && eslint '**/{aura,lwc}/**/*.js'",
+        "list:orgs": "sf org list",
+        "list:orgs:nostatus": "sf org list --skip-connection-status --all",
+        "list:package:versions": "node -e \"process.stdout.write('Enter version number (e.g., 0.1.0): '); process.stdin.on('data', v => { require('child_process').execSync('sf package version list -p va-test-accelerators,va-teams-core,va-teams-core-chro,va-teams-core-das,va-teams-core-diva,va-teams-core-hdr,va-teams-core-mpi,va-teams-core-vdif | grep ' + v.toString().trim() + ' | awk \\\"{print $1, $3, $4, $8}\\\" | sort -k1,1 -k2,2r | awk !seen[$1]++', { stdio: 'inherit' }); process.exit(); });\"",
+        "precommit": "lint-staged",
+        "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "postinstall": "husky install",
+        "pull": "sf project retrieve start -w 5",
+        "pull:force": "sf project retrieve start -w 5 --ignore-conflicts",
+        "push": "sf project deploy start --verbose -w 5",
+        "push:force": "sf project deploy start -w 5 --ignore-conflicts",
+        "open": "sf org open",
+        "scan": "sf scanner run -t force-app",
+        "scan:report": "sf scanner run -t force-app --outfile config/scan-report.csv",
+        "scan:lwc": "sfdx scanner:run -t force-app/main/default/lwc",
+        "scan:lwc:report": "sfdx scanner:run -t force-app/main/default/lwc --outfile config/scan-report.csv",
+        "setup:dev": "npm install && npm run install:toolbox && npm run create:scratch && npm run install:dep && npm run push && npm run assign:permsets",
+        "test": "npm run test:apex && npm run test:unit",
+        "test:coverage": "npm run test:apex:coverage && npm run test:unit:coverage",
+        "test:apex": "sf apex run test --wait 20",
+        "test:apex:coverage": "sf apex run test --wait 20 -c",
+        "test:unit": "sfdx-lwc-jest",
+        "test:unit:watch": "sfdx-lwc-jest --watch",
+        "test:unit:debug": "sfdx-lwc-jest --debug",
+        "test:unit:coverage": "sfdx-lwc-jest --coverage",
+        "update:sf:cli": "npm update --global @salesforce/cli && sf plugins update"
+    },
+    "devDependencies": {
+        "@dx-cli-toolbox/sfdx-toolbox-package-utils": "^0.8.4",
+        "@lwc/eslint-plugin-lwc": "^1.1.2",
+        "@prettier/plugin-xml": "^3.2.2",
+        "@salesforce/eslint-config-lwc": "^3.6.0",
+        "@salesforce/eslint-plugin-aura": "^2.1.0",
+        "@salesforce/eslint-plugin-lightning": "^1.0.0",
+        "@salesforce/packaging": "^4.2.0",
+        "@salesforce/sfdx-lwc-jest": "^3.1.2",
+        "@salesforce/sfdx-plugin-lwc-test": "^1.2.0",
+        "@salesforce/sfdx-scanner": "^4.4.0",
+        "@types/node": "^20.12.7",
+        "eslint": "^8.11.0",
+        "eslint-plugin-import": "^2.25.4",
+        "eslint-plugin-jest": "^27.6.0",
+        "husky": "^8.0.3",
+        "lint-staged": "^15.1.0",
+        "prettier": "^3.3.2",
+        "prettier-plugin-apex": "^2.1.4"
+    },
+    "lint-staged": {
+        "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
+            "prettier --write"
+        ],
+        "**/{aura,lwc}/**/*.js": [
+            "eslint"
+        ]
+    }
 }
