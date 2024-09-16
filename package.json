@@ -3,8 +3,8 @@
     "private": true,
     "version": "1.0.0",
     "description": "CI Framework",
-    "scripts": {    "scripts": {
-        "assign:permsets": "sf org assign permset -n VTC_Core && sf org assign permset -n VTC_CHRO && sf org assign permset -n VTC_DAS && sf org assign permset -n VTC_DIVA && sf org assign permset -n VTC_HDR && sf org assign permset -n VTC_MPI && sf org assign permset -n VTC_VDIF",
+    "scripts": {
+        "assign:permsets": "echo \"Assign permission sets here....\"",
         "create:scratch": "sf org create scratch --set-default --alias va-teams-integrations-dev --definition-file config/scratch-defs/dev.json --wait 20 && npm run open",
         "delete:feature:branches": "git fetch --prune && git branch | grep -v \"^\\s*master$\" | grep -v \"^\\s*release/\" | grep -v \"^\\s*int/\" | xargs -r -n 1 git branch -D",
         "delete:scratch": "sf org delete scratch",
