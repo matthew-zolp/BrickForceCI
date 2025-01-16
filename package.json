@@ -36,10 +36,11 @@
         "test:coverage": "npm run test:apex:coverage && npm run test:unit:coverage",
         "test:apex": "sf apex run test --wait 20",
         "test:apex:coverage": "sf apex run test --wait 20 -c",
-        "test:unit": "sfdx-lwc-jest",
-        "test:unit:watch": "sfdx-lwc-jest --watch",
-        "test:unit:debug": "sfdx-lwc-jest --debug",
-        "test:unit:coverage": "sfdx-lwc-jest --coverage",
+        "test:lwc": "sfdx-lwc-jest",
+        "test:lwc:ci": "sfdx-lwc-jest --coverage -- --coverageReporters=\"json-summary\"",
+        "test:lwc:watch": "sfdx-lwc-jest --watch",
+        "test:lwc:debug": "sfdx-lwc-jest --debug",
+        "test:lwc:coverage": "sfdx-lwc-jest --coverage",
         "update:sf:cli": "npm update --global @salesforce/cli && sf plugins update"
     },
     "devDependencies": {
@@ -51,6 +52,7 @@
         "@salesforce/eslint-plugin-lightning": "^1.0.0",
         "@salesforce/packaging": "^4.2.0",
         "@salesforce/sfdx-lwc-jest": "^3.1.2",
+        "@sa11y/jest": "^6.13.0",
         "@salesforce/sfdx-plugin-lwc-test": "^1.2.0",
         "@salesforce/sfdx-scanner": "^4.4.0",
         "@types/node": "^20.12.7",

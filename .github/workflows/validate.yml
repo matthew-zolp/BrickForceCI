@@ -1,25 +1,48 @@
-name: Validate Deployment
-run-name: Validate Deployment
-on: # this only runs when a pull request is created or synchronized.
+name: Validate
+on:
   pull_request:
-    paths:
-      - "force-app/main/default/**" # this only runs when changes are made to the force-app/main/default directory
-      - ".github/workflows/**"      # OR if changes are made to the workflows directory
-env:
-  TEST_ENV: 'test'
-  GH_TOKEN: ${{ github.token }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       
+    branches:
+      - main
 jobs:
-  Validate-Deployment:
+  validate:
+    name: Validate PR
+    environment: DEV-HUB
     runs-on: ubuntu-latest
-    container:
-      image: salesforce/cli:latest-full
-    steps:      
+    steps:
       - uses: actions/checkout@v4
-      - name: Authenticate to the DevHub
-        run: echo "Implement Authentication here"
-      - name: Create Scratch Org for Validation
-        run: sf org create scratch --alias BrickForceCI --target-dev-hub MattZolpsDevOrg --definition-file config/project-scratch-def.json --set-default --duration-days 1
-      - name: Deploy to Scratch Org and Run Tests
-        run: echo "Deploying and Running Tests"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install SFDX
+        run: |
+          npm install @salesforce/cli --global
+      - name: Install ToolBox
+        run: |
+          echo y | sf plugins install @dx-cli-toolbox/sfdx-toolbox-package-utils
+      - name: Auth with DEVHUB
+        env:
+          CI_SECRET: ${{secrets.CI}}
+        shell: bash
+        run: |
+          echo "$CI_SECRET" >> ci.txt
+          sfdx force:auth:sfdxurl:store -f ci.txt -a CI -d
+      - name: Create Scratch Org
+        run: |
+          sf org create scratch --set-default --alias my-scratch-org --definition-file config/project-scratch-def.json --wait 20
+      - name: Install Dependencies
+        run: |
+          sf toolbox package dependencies install
+      - name: Pre-deploy Metadata
+        run: |
+          sf project deploy start --target-org my-scratch-org  --source-dir sfdx-source/unpackaged/predeploy
+      - name: Assign Permission Sets to Default User
+        run: echo "Assign Permission Sets required for Apex Tests to pass here"
+      - name: OmniStudio Metadata
+        run: echo "Deploy OmniStudio Metadata Separately Here"
+      - name: Deploy Full Metadata and Run Apex Tests
+        run: |
+          sf project deploy start --target-org my-scratch-org  -w 20 --ignore-conflicts --test-level RunLocalTests
+      - name: Delete Scratch Org
+        if: ${{ always() }}
+        run: |
+          echo y | sf org delete scratch
